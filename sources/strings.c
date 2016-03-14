@@ -63,3 +63,14 @@ char *full_command(char *cursor)
 	free(tmp);
 	return (cmd);
 }
+
+void init_string(char *str, size_t size)
+{
+	size_t i = 0;
+
+	while(i < size)
+	{
+		str[i] = '\0';
+		i++;
+	}
+}
