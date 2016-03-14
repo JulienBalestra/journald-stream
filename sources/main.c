@@ -43,14 +43,14 @@ int main(void)
 	char *command;
 
 	command = find_cursor();
-	if ((buf = (char *)malloc(sizeof(char) * HEAP_JOURNAL_SIZE)))
-	{
-		init_string(buf, HEAP_JOURNAL_SIZE);
-	}
-	else
-		return (3);
 	if ((pipe = popen(command, "r")))
 	{
+		if ((buf = (char *)malloc(sizeof(char) * HEAP_JOURNAL_SIZE)))
+		{
+			init_string(buf, HEAP_JOURNAL_SIZE);
+		}
+		else
+			return (3);
 		while (fgets(buf, HEAP_JOURNAL_SIZE, pipe))
 		{
 			if (starts_with("-- cursor: ", buf))
@@ -75,6 +75,7 @@ int main(void)
 		pclose(pipe);
 		return (2);
 	}
+	free(buf);
 	free(command);
 	pclose(pipe);
 	return (0);
