@@ -44,7 +44,7 @@ int main(void)
 
 	command = find_cursor();
 	command = add_directory(command);
-	puts(command);
+	//write(2, command, strlen(command));
 	if ((pipe = popen(command, "r")))
 	{
 		if ((buf = (char *)malloc(sizeof(char) * HEAP_JOURNAL_SIZE)))
