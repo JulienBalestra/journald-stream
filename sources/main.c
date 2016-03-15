@@ -43,6 +43,8 @@ int main(void)
 	char *command;
 
 	command = find_cursor();
+	command = add_directory(command);
+	puts(command);
 	if ((pipe = popen(command, "r")))
 	{
 		if ((buf = (char *)malloc(sizeof(char) * HEAP_JOURNAL_SIZE)))

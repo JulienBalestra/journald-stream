@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "journal.h"
 #include "../includes/journal.h"
@@ -37,6 +38,28 @@ int starts_with(const char *pre, const char *str)
 			lenstr = strlen(str);
 
 	return lenstr < lenpre ? 0 : strncmp(pre, str, lenpre) == 0;
+}
+
+char *add_directory(char *cmd)
+{
+	char *tmp;
+	char *dir = getenv("JOURNAL_DIRECTORY");
+
+	if (dir)
+	{
+		tmp = cmd;
+		cmd = strjoin(cmd, " ");
+		free(tmp);
+
+		tmp = cmd;
+		cmd = strjoin(cmd, "--directory=");
+		free(tmp);
+
+		tmp = cmd;
+		cmd = strjoin(cmd, dir);
+		free(tmp);
+	}
+	return (cmd);
 }
 
 char *full_command(char *cursor)

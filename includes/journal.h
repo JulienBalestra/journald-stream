@@ -17,6 +17,8 @@ int starts_with(const char *pre, const char *str);
 
 void init_string(char *str, size_t size);
 
+char *add_directory(char *cmd);
+
 
 /*
  * cursor.c
