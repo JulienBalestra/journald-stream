@@ -13,39 +13,39 @@ int 	is_cursor(char *cursor)
 {
 	int i = 0;
 
-	if (! cursor || strlen(cursor) != 122)
-		return (i);
+	if (! cursor)
+		return (0);
 	if (starts_with("s=", &cursor[i]) == 0)
-		return (i);
+		return (0);
 	i++;
 	while (cursor[i] && cursor[i] != ';')
 		i++;
 	if (starts_with(";i=", &cursor[i]) == 0)
-		return (i);
+		return (0);
 	i = i + 3;
 	while (isxdigit(cursor[i]) && cursor[i] != ';')
 		i++;
 	if (starts_with(";b=", &cursor[i]) == 0)
-		return (i);
+		return (0);
 	i = i + 3;
 	while (isxdigit(cursor[i]) && cursor[i] != ';')
 		i++;
 	if (starts_with(";m=", &cursor[i]) == 0)
-		return (i);
+		return (0);
 	i = i + 3;
 	while (isxdigit(cursor[i]) && cursor[i] != ';')
 		i++;
 	if (starts_with(";t=", &cursor[i]) == 0)
-		return (i);
+		return (0);
 	i = i + 3;
 	while (isxdigit(cursor[i]) && cursor[i] != ';')
 		i++;
 	if (starts_with(";x=", &cursor[i]) == 0)
-		return (i);
+		return (0);
 	i = i + 3;
 	while (isxdigit(cursor[i]))
 		i++;
-	return (i);
+	return (1);
 }
 
 int refresh_cursor(char *cursor)
@@ -59,7 +59,7 @@ int refresh_cursor(char *cursor)
 	{
 		if (value[strlen(value) - 1] == '\n')
 			value[strlen(value) - 1] = '\0';
-		if (is_cursor(value) == 122)
+		if (is_cursor(value))
 		{
 			write(fd, value, strlen(value));
 			return (1);

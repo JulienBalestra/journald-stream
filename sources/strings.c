@@ -62,7 +62,7 @@ char *add_directory(char *cmd)
 	return (cmd);
 }
 
-char *full_command(char *cursor)
+char *add_after_cursor(char *cursor)
 {
 	char *tmp;
 	char *cmd;

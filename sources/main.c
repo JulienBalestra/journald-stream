@@ -19,9 +19,9 @@ char *find_cursor(void)
 	{
 		if ((cursor = get_cursor_from_sincedb(fd, buf)))
 		{
-			if (is_cursor(cursor) == 122)
+			if (is_cursor(cursor))
 			{
-				cmd = full_command(cursor);
+				cmd = add_after_cursor(cursor);
 			}
 			else
 				cmd = strdup(JOURNALCTL);
