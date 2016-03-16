@@ -10,13 +10,14 @@
 char *find_cursor(void)
 {
 	int fd;
-	char *buf;
-	char *cursor;
-	char *cmd;
+	char *buf = NULL;
+	char *cursor = NULL;
+	char *cmd = NULL;
 
 	if ((fd = open(SINCE_DB_PATH, O_RDONLY)) &&
 		((buf = (char *) malloc(sizeof(char) * HEAP_CURSOR_SIZE))))
 	{
+		init_string(buf, HEAP_CURSOR_SIZE);
 		if ((cursor = get_cursor_from_sincedb(fd, buf)))
 		{
 			if (is_cursor(cursor))
@@ -29,10 +30,10 @@ char *find_cursor(void)
 		else
 			cmd = strdup(JOURNALCTL);
 		free(buf);
+		close(fd);
 	}
 	else
 		cmd = strdup(JOURNALCTL);
-	close(fd);
 	return (cmd);
 }
 
@@ -47,15 +48,11 @@ void display_command(char *command)
 	}
 }
 
-int main(void)
+void process_pipe(char *command)
 {
-	FILE *pipe;
-	char *buf;
-	char *command;
+	FILE *pipe = NULL;
+	char *buf = NULL;
 
-	command = find_cursor();
-	command = add_directory(command);
-	display_command(command);
 	if ((pipe = popen(command, "r")))
 	{
 		if ((buf = (char *)malloc(sizeof(char) * HEAP_JOURNAL_SIZE)))
@@ -63,7 +60,7 @@ int main(void)
 			init_string(buf, HEAP_JOURNAL_SIZE);
 		}
 		else
-			return (3);
+			return ;
 		while (fgets(buf, HEAP_JOURNAL_SIZE, pipe))
 		{
 			if (starts_with("-- cursor: ", buf))
@@ -75,21 +72,34 @@ int main(void)
 					write(2, CURSOR_ERROR_MSG, strlen(CURSOR_ERROR_MSG));
 					free(command);
 					pclose(pipe);
-					return (1);
+					return ;
 				}
 			}
 			write(1, buf, strlen(buf));
 		}
+		pclose(pipe);
+		free(buf);
 	}
 	else
 	{
 		write(2, PIPE_ERROR_MSG, strlen(PIPE_ERROR_MSG));
-		free(command);
-		pclose(pipe);
-		return (2);
 	}
-	free(buf);
-	free(command);
-	pclose(pipe);
+}
+
+int main(int ac, char **av)
+{
+
+	char *command = NULL;
+
+	if ((command = find_cursor()))
+	{
+		if ((command = add_directory(command, ac, av)))
+		{
+			display_command(command);
+			process_pipe(command);
+		}
+		free(command);
+	}
+
 	return (0);
 }

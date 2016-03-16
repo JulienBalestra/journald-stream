@@ -72,9 +72,10 @@ char *get_cursor_from_sincedb(int sincedb_fd, char *buf)
 {
 	ssize_t ret;
 
-	if ((ret = read(sincedb_fd, buf, HEAP_CURSOR_SIZE)))
+	if (sincedb_fd && (ret = read(sincedb_fd, buf, HEAP_CURSOR_SIZE + 1)))
 	{
-		buf[ret] = '\0';
+		if (ret > 0)
+			buf[ret] = '\0';
 	}
 	return (ret > 1 ? buf : NULL);
 }

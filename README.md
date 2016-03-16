@@ -2,9 +2,16 @@
 
 ## Input
 
-    pipe { command => "/opt/journald-stream" codec => "json"}
+    pipe { command => "/opt/journald-stream" }
     
-ENV
+    
+## ENV
 
-* JOURNAL_DIRECTORY
-* JOURNAL_DEBUG
+By default a define set this to "/var/log/journal", override with:
+    
+    JOURNAL_DIRECTORY || --directory=
+
+
+For debug program:
+
+    JOURNAL_DEBUG=true
