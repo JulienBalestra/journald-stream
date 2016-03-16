@@ -36,6 +36,17 @@ char *find_cursor(void)
 	return (cmd);
 }
 
+void display_command(char *command)
+{
+	char *debug = getenv("JOURNAL_DEBUG");
+
+	if (debug && strcmp("true", debug) == 0)
+	{
+		write(2, command, strlen(command));
+		write(2, "\n", 1);
+	}
+}
+
 int main(void)
 {
 	FILE *pipe;
@@ -44,7 +55,7 @@ int main(void)
 
 	command = find_cursor();
 	command = add_directory(command);
-	//write(2, command, strlen(command));
+	display_command(command);
 	if ((pipe = popen(command, "r")))
 	{
 		if ((buf = (char *)malloc(sizeof(char) * HEAP_JOURNAL_SIZE)))
