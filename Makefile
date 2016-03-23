@@ -34,7 +34,7 @@ all: $(NAME)
 $(NAME): $(OBJ_DIR) $(TARGET)
 
 $(TARGET): $(OBJS)
-	@echo " + js : Creating  $(CL_GREED)$@$(CL_WHITE) $(shell sleep 0.01)"
+	@echo " + js : Creating  $(CL_GREED)$@$(CL_WHITE)"
 	@ar -rcv $(TARGET) $(OBJS) > /dev/null
 	@ranlib $(TARGET)
 	@$(CC) $(CFLAGS) $(MAIN) $(TARGET) -I $(INC_DIR) -o $(BIN)
