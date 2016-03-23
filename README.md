@@ -7,10 +7,10 @@
     
 ## ENV
 
-By default a define set this to "/var/log/journal", override with:
+By default a define set this to "/run/log/journal", override with:
     
     JOURNAL_DIRECTORY || --directory=
-
+ 
 
 For debug program:
 
