@@ -48,6 +48,24 @@ void display_command(char *command)
 	}
 }
 
+void stream_pipe_to_fd(FILE *pipe, char *buf, int fd, char *since_db)
+{
+	while (fgets(buf, HEAP_JOURNAL_SIZE, pipe))
+	{
+		if (starts_with("-- cursor: ", buf))
+		{
+			if (refresh_cursor(buf, since_db) == 1)
+				break ;
+			else
+			{
+				write(2, CURSOR_ERROR_MSG, strlen(CURSOR_ERROR_MSG));
+				break ;
+			}
+		}
+		write(fd, buf, strlen(buf));
+	}
+}
+
 void process_pipe(char *command, char *since_db)
 {
 	FILE *pipe = NULL;
@@ -58,27 +76,10 @@ void process_pipe(char *command, char *since_db)
 		if ((buf = (char *)malloc(sizeof(char) * HEAP_JOURNAL_SIZE)))
 		{
 			init_string(buf, HEAP_JOURNAL_SIZE);
-		}
-		else
-			return ;
-		while (fgets(buf, HEAP_JOURNAL_SIZE, pipe))
-		{
-			if (starts_with("-- cursor: ", buf))
-			{
-				if (refresh_cursor(buf, since_db) == 1)
-					break;
-				else
-				{
-					write(2, CURSOR_ERROR_MSG, strlen(CURSOR_ERROR_MSG));
-					free(command);
-					pclose(pipe);
-					return ;
-				}
-			}
-			write(1, buf, strlen(buf));
+			stream_pipe_to_fd(pipe, buf, 1, since_db);
+			free(buf);
 		}
 		pclose(pipe);
-		free(buf);
 	}
 	else
 	{
