@@ -1,3 +1,4 @@
+/journald-stream
 .objects
 *.o
 a.out
