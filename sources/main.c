@@ -76,7 +76,7 @@ void process_pipe(char *command, char *since_db)
 		if ((buf = (char *)malloc(sizeof(char) * HEAP_JOURNAL_SIZE)))
 		{
 			init_string(buf, HEAP_JOURNAL_SIZE);
-			stream_pipe_to_fd(pipe, buf, 1, since_db);
+			stream_pipe_to_fd(pipe, buf, STDOUT_FD, since_db);
 			free(buf);
 		}
 		pclose(pipe);

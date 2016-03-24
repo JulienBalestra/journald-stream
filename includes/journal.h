@@ -8,6 +8,7 @@
 # define CURSOR_ERROR_MSG "Not a predefined cursor\n"
 # define JOURNALCTL "/bin/journalctl -o json --show-cursor"
 # define DEFAULT_DIRECTORY "/run/log/journal"
+# define STDOUT_FD 1
 
 /*
  * strings.c
