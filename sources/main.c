@@ -7,14 +7,14 @@
 #include "journal.h"
 #include "../includes/journal.h"
 
-char *find_cursor(void)
+char *command_with_cursor(char *since_db)
 {
 	int fd;
 	char *buf = NULL;
 	char *cursor = NULL;
 	char *cmd = NULL;
 
-	if ((fd = open(SINCE_DB_PATH, O_RDONLY)) &&
+	if ((fd = open(since_db, O_RDONLY)) &&
 		((buf = (char *) malloc(sizeof(char) * HEAP_CURSOR_SIZE))))
 	{
 		init_string(buf, HEAP_CURSOR_SIZE);
@@ -48,7 +48,7 @@ void display_command(char *command)
 	}
 }
 
-void process_pipe(char *command)
+void process_pipe(char *command, char *since_db)
 {
 	FILE *pipe = NULL;
 	char *buf = NULL;
@@ -65,7 +65,7 @@ void process_pipe(char *command)
 		{
 			if (starts_with("-- cursor: ", buf))
 			{
-				if (refresh_cursor(buf) == 1)
+				if (refresh_cursor(buf, since_db) == 1)
 					break;
 				else
 				{
@@ -88,18 +88,21 @@ void process_pipe(char *command)
 
 int main(int ac, char **av)
 {
-
 	char *command = NULL;
+	char *since_db = NULL;
 
-	if ((command = find_cursor()))
+	if (!(since_db = getenv("SINCE_DB_PATH")))
+	{
+		since_db = SINCE_DB_PATH;
+	}
+	if ((command = command_with_cursor(since_db)))
 	{
 		if ((command = add_directory(command, ac, av)))
 		{
 			display_command(command);
-			process_pipe(command);
+			process_pipe(command, since_db);
 		}
 		free(command);
 	}
-
 	return (0);
 }

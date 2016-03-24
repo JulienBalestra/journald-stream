@@ -48,13 +48,13 @@ int 	is_cursor(char *cursor)
 	return (1);
 }
 
-int refresh_cursor(char *cursor)
+int refresh_cursor(char *cursor, char *since_db)
 {
 	int fd;
 	char *value;
 
 	value = &cursor[11];
-	if (value && (fd = open(SINCE_DB_PATH, O_WRONLY | O_TRUNC | O_CREAT,
+	if (value && (fd = open(since_db, O_WRONLY | O_TRUNC | O_CREAT,
 							S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)))
 	{
 		if (value[strlen(value) - 1] == '\n')

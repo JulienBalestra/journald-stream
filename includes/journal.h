@@ -24,7 +24,7 @@ char *add_directory(char *cmd, int ac, char **av);
 /*
  * cursor.c
  */
-int refresh_cursor(char *cursor);
+int refresh_cursor(char *cursor, char *since_db);
 
 int is_cursor(char *cursor);
 
