@@ -45,7 +45,6 @@ class JournaldStream(object):
                 self.redis_messages = len(self.log_db.keys("*"))
             except redis.exceptions.ConnectionError:
                 self._redis_connection_error()
-            print "update redis messages counter: %d messages" % self.redis_messages
         return self.redis_messages
 
     def _get_cursor(self):
@@ -100,5 +99,5 @@ if __name__ == "__main__":
         js.stream()
     except KeyboardInterrupt:
         print "gracefully close, read %d messages, %d messages in redis" % (
-            js.read_messages, js.redis_messages)
+            js.read_messages, js.count_redis_messages(update=True))
         js.close()
