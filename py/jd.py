@@ -50,6 +50,8 @@ class JournaldStream(object):
                 self.redis_messages = self.log_db.info("keyspace")["db%d" % self.db_log_index]["keys"]
             except redis.exceptions.ConnectionError:
                 self._redis_connection_error()
+            except KeyError:
+                self.redis_messages = 0
         return self.redis_messages
 
     def _get_cursor(self):
