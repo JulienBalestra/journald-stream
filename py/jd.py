@@ -71,7 +71,7 @@ class JournaldStream(object):
         print "seeked journal after %d messages" % self.read_messages
 
     def _stream_poller(self):
-        print "start polling realtime"
+        print "start polling realtime messages"
         self.poll.register(self.reader, self.reader.get_events())
         while self.poll.poll():
             if self.reader.process() == journal.APPEND:
