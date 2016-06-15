@@ -30,7 +30,7 @@ class JournaldStream(object):
     rabbit_data_events = 30
     logs_queue_name = "logs"
     cursor_path = "sincedb"
-    rabbit_props = pika.BasicProperties(content_type='applicationapplication/json', delivery_mode=2)
+    rabbit_props = pika.BasicProperties(content_type='application/json', delivery_mode=2)
 
     def __init__(self, rabbit_host, rabbit_port=5672, journal_path="/run/log/journal"):
         self.rabbit_host = self._force_type_value(str, rabbit_host)
