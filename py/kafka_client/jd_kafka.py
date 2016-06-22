@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+import argparse
 import json
 
 import time
@@ -112,8 +114,17 @@ class JournaldStream(object):
 		self.producer.close()
 
 
+def fast_arg_parsing():
+	args = argparse.ArgumentParser()
+	args.add_argument("kafka_host", type=str, help="Kafka host")
+	args.add_argument("kafka_port", type=int, help="Kafka port")
+
+	return args.parse_args().kafka_host, args.parse_args().kafka_port
+
+
 if __name__ == "__main__":
-	js = JournaldStream("localhost")
+	host, port = fast_arg_parsing()
+	js = JournaldStream(host, port)
 	try:
 		js.stream()
 	except KeyboardInterrupt:
