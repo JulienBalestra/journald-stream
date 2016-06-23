@@ -1,6 +1,9 @@
 FROM debian:latest
 
-ADD jds_kafka.py /opt/jds_kafka.py
+ENV JDS="/opt/jds_kafka.py"
+ADD jds_kafka.py $JDS
+
+ADD entrypoint.sh /entrypoint.sh
 
 ARG PY_SD_API=/opt/python-systemd
 ARG DEBIAN_FRONTEND=noninteractive
@@ -16,7 +19,7 @@ RUN apt-get update && \
     apt-get autoremove -y && rm -Rf $PY_SD_API
 
 
-ENTRYPOINT ["/opt/jds_kafka.py"]
+ENTRYPOINT ["/entrypoint.sh"]
 
 
 

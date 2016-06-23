@@ -119,13 +119,17 @@ class JournaldStream(object):
 		self.producer.close()
 
 
+def comma_list(string):
+	return string.split(',')
+
+
 def fast_arg_parsing():
 	args = argparse.ArgumentParser()
-	args.add_argument("kafka_hosts", type=list,
-					  help="Kafka hosts [\"HOST:PORT\", \"HOST:PORT\"]")
+	args.add_argument("kafka_hosts", type=comma_list,
+					  help="Kafka hosts \"HOST:PORT,HOST:PORT\" or HOST:PORT")
 
-	args.add_argument("sincedb_path", type=str, default="./sincedb",
-					  help="SinceDB for Journald cursor")
+	args.add_argument("--sincedb_path", type=str, default="/run/log/journal/sincedb",
+					  help="SinceDB path for Journald cursor")
 
 	return args.parse_args().kafka_hosts, args.parse_args().sincedb_path
 
