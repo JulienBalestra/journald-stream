@@ -5,7 +5,7 @@ ADD jds_kafka.py /opt/jds_kafka.py
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
-    apt-get upgrade -y &&
+    apt-get upgrade -y && \
     apt-get install -y python python-dev python-pip && \
     apt-get install -y python-systemd libsystemd-dev && \
     pip install --upgrade kafka-python && \
