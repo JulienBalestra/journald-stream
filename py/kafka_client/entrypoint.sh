@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -o pipefail
+
 ENDPOINT=()
 
 function join { local IFS="$1"; shift; echo -n "$*"; }
@@ -27,10 +29,18 @@ then
     exit 1
 fi
 
-for i in $(etcdctl ls /$ETCD_DIR)
+i=0
+while true
 do
-    IP=$(etcdctl get $i)
+    IP=$(curl -s localhost:2379/v2/keys/${ETCD_DIR} | \
+        jq -e -r .node.nodes[$i].value)
+    if [ $? -ne 0 ]
+    then
+        echo "$i out of range in ${ETCD_DIR}"
+        break
+    fi
     ENDPOINT+=("$IP:$PORT")
+    let i++
 done
 
 exec $JDS $(join , ${ENDPOINT[@]}) $SINCEDB

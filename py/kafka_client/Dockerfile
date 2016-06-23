@@ -11,7 +11,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y python python-pip python-dev && \
-    apt-get install -y libsystemd-dev git pkgconf && \
+    apt-get install -y libsystemd-dev git pkgconf curl jq && \
     git clone https://github.com/systemd/python-systemd.git $PY_SD_API && \
     cd $PY_SD_API && make && make install && cd /tmp && \
     pip install --upgrade kafka-python && \
