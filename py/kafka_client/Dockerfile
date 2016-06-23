@@ -6,7 +6,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y python &&
+    apt-get install -y python && \
     apt-get install -y python-pip && \
     apt-get install -y libsystemd-dev && \
     apt-get install -y python-systemd  && \
