@@ -16,7 +16,7 @@ RUN apt-get update && \
     apt-get autoremove -y && rm -Rf $PY_SD_API
 
 
-ENTRYPOINT ["/opt/jd_kafka.py"]
+ENTRYPOINT ["/opt/jds_kafka.py"]
 
 
 
