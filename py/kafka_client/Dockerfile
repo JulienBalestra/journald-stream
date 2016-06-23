@@ -6,7 +6,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y python python-dev python-pip && \
+    apt-get install -y python python-pip && \
     apt-get install -y python-systemd libsystemd-dev && \
     pip install --upgrade kafka-python && \
     apt-get clean autoclean && \
