@@ -1,8 +1,8 @@
 FROM debian:latest
 
 ADD jds_kafka.py /opt/jds_kafka.py
-ADD PY_SD_API /opt/python-systemd
 
+ARG PY_SD_API=/opt/python-systemd
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
