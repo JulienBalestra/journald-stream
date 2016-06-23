@@ -1,7 +1,19 @@
 FROM debian:latest
 
+ADD jds_kafka.py /opt/jds_kafka.py
+
+ARG DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && \
-    apt-get install libsystemd-dev python python-pip
+    apt-get upgrade -y &&
+    apt-get install -y python python-dev python-pip && \
+    apt-get install -y python-systemd libsystemd-dev && \
+    pip install --upgrade kafka-python && \
+    apt-get clean autoclean && \
+    apt-get autoremove -y
+
+
+ENTRYPOINT ["/opt/jd_kafka.py"]
 
 
 

@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 import argparse
 import json
-
 import time
+
 from systemd import journal
 
 from kafka import KafkaProducer
@@ -26,19 +26,19 @@ BASIC_CONVERTERS = {
 	'__MONOTONIC_TIMESTAMP': _convert_monotonic
 }
 
+SINCE_DB = "./sincedb"
+
 
 class JournaldStream(object):
 	messages_steps = 100
 	logs_topic_name = "logs"
-	cursor_path = "sincedb"
 	kafka_sleep = 1
 
-	def __init__(self, kafka_host, kafka_port=9092, journal_path="/run/log/journal"):
-		self.kafka_host = self._force_type_value(str, kafka_host)
-		self.kafka_port = self._force_type_value(int, kafka_port)
+	def __init__(self, kafka_hosts, journal_path="/run/log/journal"):
+		self.kafka_hosts = self._force_type_value(list, kafka_hosts)
 
 		self.producer = KafkaProducer(
-				bootstrap_servers='%s:%d' % (self.kafka_host, self.kafka_port),
+				bootstrap_servers=self.kafka_hosts,
 				value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 
 		self.reader = journal.Reader(path=journal_path, converters=BASIC_CONVERTERS)
@@ -52,15 +52,18 @@ class JournaldStream(object):
 
 	def _save_cursor(self):
 		if self.cursor != "":
-			with open(self.cursor_path, 'w') as f:
+			with open(SINCE_DB, 'w') as f:
 				f.write(self.cursor)
 		else:
 			print "invalid cursor"
 
 	def _get_cursor(self):
-		with open(self.cursor_path, 'r') as f:
-			self.cursor = f.read()
-			return True if self.cursor else False
+		try:
+			with open(SINCE_DB, 'r') as f:
+				self.cursor = f.read()
+				return True if self.cursor else False
+		except IOError:
+			return False
 
 	def _stream_to_seek(self):
 		if self._get_cursor():
@@ -94,7 +97,9 @@ class JournaldStream(object):
 	def _periodic_send_task(self):
 		if self.read_messages % self.messages_steps == 0:
 			print "read %d messages, process flush" % self.read_messages
+			ts = time.time()
 			self.producer.flush()
+			print "flush done in %d" % (time.time() - ts)
 
 	@staticmethod
 	def _periodic_sleep_task(nb_message):
@@ -116,15 +121,18 @@ class JournaldStream(object):
 
 def fast_arg_parsing():
 	args = argparse.ArgumentParser()
-	args.add_argument("kafka_host", type=str, help="Kafka host")
-	args.add_argument("kafka_port", type=int, help="Kafka port")
+	args.add_argument("kafka_hosts", type=list,
+					  help="Kafka hosts [\"HOST:PORT\", \"HOST:PORT\"]")
 
-	return args.parse_args().kafka_host, args.parse_args().kafka_port
+	args.add_argument("sincedb_path", type=str, default="./sincedb",
+					  help="SinceDB for Journald cursor")
+
+	return args.parse_args().kafka_hosts, args.parse_args().sincedb_path
 
 
 if __name__ == "__main__":
-	host, port = fast_arg_parsing()
-	js = JournaldStream(host, port)
+	hosts, SINCE_DB = fast_arg_parsing()
+	js = JournaldStream(hosts)
 	try:
 		js.stream()
 	except KeyboardInterrupt:
