@@ -36,9 +36,10 @@ do
         jq -e -r .node.nodes[$i].value)
     if [ $? -ne 0 ]
     then
-        echo "$i out of range in ${ETCD_DIR}"
+        echo "{\"${ETCD_DIR}_$i\": \"$IP\"}"
         break
     fi
+    echo "{\"${ETCD_DIR}_$i\": \"$IP\"}"
     ENDPOINT+=("$IP:$PORT")
     let i++
 done
