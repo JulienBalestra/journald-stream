@@ -136,6 +136,7 @@ def fast_arg_parsing():
 
 if __name__ == "__main__":
 	hosts, SINCE_DB = fast_arg_parsing()
+	print "hosts: %s sincedb: %s" % (hosts, SINCE_DB)
 	js = JournaldStream(hosts)
 	try:
 		js.stream()

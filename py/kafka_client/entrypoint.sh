@@ -44,4 +44,5 @@ do
     let i++
 done
 
-exec $JDS $(join , ${ENDPOINT[@]}) $SINCEDB
+echo $(join , ${ENDPOINT[@]})
+exec $JDS $(join , ${ENDPOINT[@]}) --sincedb_path $SINCEDB
