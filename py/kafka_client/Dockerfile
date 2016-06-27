@@ -16,7 +16,7 @@ RUN apt-get update && \
     cd $PY_SD_API && make && make install && cd /tmp && \
     pip install --upgrade kafka-python && \
     apt-get clean autoclean && \
-    apt-get autoremove -y && rm -Rf $PY_SD_API
+    apt-get autoremove -y && rm -Rf $PY_SD_API && mkdir -vp /var/lib/jds
 
 
 ENTRYPOINT ["/entrypoint.sh"]
