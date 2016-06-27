@@ -36,7 +36,7 @@ do
         jq -e -r .node.nodes[$i].value)
     if [ $? -ne 0 ]
     then
-        echo "{\"${ETCD_DIR}_$i\": \"$IP\"}"
+        echo "{\"${ETCD_DIR}$i\": \"$IP\"}"
         break
     fi
     echo "{\"${ETCD_DIR}_$i\": \"$IP\"}"
