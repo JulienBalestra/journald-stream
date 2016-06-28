@@ -23,25 +23,15 @@ then
     exit 1
 fi
 
-if [ -z $ETCD_DIR ]
+if [ -z $DNS_SEARCH ]
 then
-    echo '$ETCD_DIR missing'
+    echo 'DNS_SEARCH missing like: "kafka.skydns.local" for kafka0.kafka.skydns.local, kafka1.kafka.skydns.local, ... '
     exit 1
 fi
 
-i=0
-while true
+for ENTRY in $(dig +short @localhost $DNS_SEARCH)
 do
-    IP=$(curl -s localhost:2379/v2/keys/${ETCD_DIR} | \
-        jq -e -r .node.nodes[$i].value)
-    if [ $? -ne 0 ]
-    then
-        echo "{\"${ETCD_DIR}$i\": \"$IP\"}"
-        break
-    fi
-    echo "{\"${ETCD_DIR}_$i\": \"$IP\"}"
-    ENDPOINT+=("$IP:$PORT")
-    let i++
+    ENDPOINT+=("$ENTRY:$PORT")
 done
 
 echo $(join , ${ENDPOINT[@]})
