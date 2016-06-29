@@ -105,8 +105,21 @@ class JournaldStream(object):
 	def _periodic_sleep_task(nb_message):
 		pass
 
+	@staticmethod
+	def _filter(full_log):
+		filter_data = {}
+
+		for key in full_log:
+			new = key
+			if new != "__CURSOR":
+				while new[0] == "_":
+					new = new[1:]
+				filter_data[new.lower()] = full_log[key]
+		return filter_data
+
 	def _kafka_send(self, full_log):
-		self.producer.send(self.logs_topic_name, full_log)
+		filter_data = self._filter(full_log)
+		self.producer.send(self.logs_topic_name, filter_data)
 		self.cursor = full_log["__CURSOR"]
 		self._save_cursor()
 		self.read_messages += 1
